@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 '''
-OPS435 Assignment 1 - Summer 2023
+OPS435 Assignment 1 - Fall 2024
 Program: assignment1.py 
-Author: "Student Name"
-The python code in this file (a1_[Student_id].py) is original work written by
-"Student Name". No code in this file is copied from any other source
+Author: Chograb TENZIN
+The python code in this file (a1_ctenzin.py) is original work written by
+Chograb Tenzin. No code in this file is copied from any other source
 except those provided by the course instructor, including any person,
 textbook, or on-line resource. I have not shared this python script
 with anyone or anything except for submission for grading. I understand
@@ -27,7 +27,13 @@ def day_of_week(year: int, month: int, date: int) -> str:
 
 def mon_max(month:int, year:int) -> int:
     "returns the maximum day for a given month. Includes leap year check"
-    ...
+    if month in [1, 3, 5, 7, 8, 10, 12]:
+        return 31
+    elif month in [4, 6, 9, 11]:
+        return 30
+    elif month == 2:
+        return 29 if leap_year(year) else 28
+    return 0
 
 def after(date: str) -> str:
     '''
@@ -63,20 +69,40 @@ def after(date: str) -> str:
 
 def usage():
     "Print a usage message to the user"
-    ...
+    print("Usage: assignment1.py YYYY-MM-DD YYYY-MM-DD")
+    sys.exit(1)
 
 
 def leap_year(year: int) -> bool:
     "return True if the year is a leap year"
-    ...
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
 def valid_date(date: str) -> bool:
     "check validity of date and return True if valid"
-    ...
+    try:
+        year, month, day = map(int, date.split('-'))
+        if 1 <= month <= 12 and 1 <= day <= mon_max(month, year):
+            return True
+        return False
+    except ValueError:
+        return False
 
 def day_count(start_date: str, stop_date: str) -> int:
     "Loops through range of dates, and returns number of weekend days"
     ...
 
 if __name__ == "__main__":
-    ...
+    if len(sys.argv) != 3:
+        usage()
+    
+    start_date, stop_date = sys.argv[1], sys.argv[2]
+
+    if not valid_date(start_date) or not valid_date(stop_date):
+        usage()
+
+    # Ensure start_date is earlier than stop_date
+    if start_date > stop_date:
+        start_date, stop_date = stop_date, start_date
+
+    weekend_days = day_count(start_date, stop_date)
+    print(f"The period between {start_date} and {stop_date} includes {weekend_days} weekend days.")
